@@ -1,48 +1,43 @@
 package framework.tools;
 
+import aquality.selenium.browser.AqualityServices;
+
 import java.sql.*;
 
 public class MySQLTools {
 
     private static Connection con;
-    private static Statement stmt;
-    private static ResultSet rs;
 
-    public static ResultSet makeQuery(String query, String url, String user, String password) {
+    public static void connectToDataBase(String url, String user, String password) {
         try {
             con = DriverManager.getConnection(url, user, password);
-            stmt = con.createStatement();
-            rs = stmt.executeQuery(query);
-
-        } catch (SQLException sqlEx) {
-            sqlEx.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return rs;
     }
 
-    public static void printQuery(ResultSet resultSet) throws SQLException {
-        ResultSetMetaData rsmd = resultSet.getMetaData();
-        int columnsNumber = rsmd.getColumnCount();
-        while (resultSet.next()) {
-            for (int i = 1; i <= columnsNumber; i++) {
-                System.out.print(resultSet.getString(i) + " ");
+    public static void printQuery(String query) throws SQLException {
+        try (Statement stmt = con.createStatement();
+             ResultSet resultSet = stmt.executeQuery(query)) {
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    System.out.print(resultSet.getString(i) + " ");
+                }
+                System.out.println();
             }
-            System.out.println();
         }
     }
 
-    public static void closeAll() {
+    public static void closeConnection() {
         try {
             con.close();
         } catch (SQLException se) {
+            {
+                AqualityServices.getLogger().error(se.getMessage());
+            }
         }
-        try {
-            stmt.close();
-        } catch (SQLException se) {
-        }
-        try {
-            rs.close();
-        } catch (SQLException se) {
-        }
+
     }
 }

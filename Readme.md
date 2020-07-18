@@ -1,0 +1,1 @@
+Enter the password "traktal86" in class "MySQLTest" before start.
