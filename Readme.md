@@ -1,1 +1,1 @@
-Enter the password "traktal86" in class "MySQLTest" before start.
+Enter the username in fiel "login" and ypur password if field "password" in gile "config properties" before start.
